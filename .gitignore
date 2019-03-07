@@ -109,6 +109,9 @@ venv.bak/
 # Log file
 *.log
 
+# Output file
+*.txt
+
 # BlueJ files
 *.ctxt
 
