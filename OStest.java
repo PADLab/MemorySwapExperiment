@@ -16,6 +16,16 @@ public class OStest {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 	
+	// return available memory
+	public static long availableMem() {
+		return Runtime.getRuntime().freeMemory();
+	}
+	
+	// return total memory
+	public static long totalMem() {
+		return Runtime.getRuntime().totalMemory();
+	}
+	
 	//return current % of memory used
 	public static long percentUsedMem() {
 		long total = Runtime.getRuntime().totalMemory();
@@ -33,12 +43,30 @@ public class OStest {
 		return(osBean.getProcessCpuLoad());
 	}
 	
+	public static void appendToFile(File file, String str) 
+    { 
+        try { 
+  
+            // Open given file in append mode. 
+            BufferedWriter out = new BufferedWriter( 
+                   new FileWriter(file, true)); 
+            out.write(str); 
+            out.close(); 
+        } 
+        catch (IOException e) { 
+            System.out.println("exception occoured" + e); 
+        } 
+    } 
+	
 	public static void main(String[] args) {
 		int loopCount = 1;
 		long delta = 0;
 		long usedMem=0;
 		double cpuLoad = 0;
 		Random rand = new Random();
+		
+		System.out.println("Initial total memory: " + totalMem());
+		System.out.println("Initial available memory: " + availableMem());
 		
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		
@@ -53,19 +81,24 @@ public class OStest {
 			fr = new FileWriter(file);
             br = new BufferedWriter(fr);
 			br.write("Delta, loop, list size, mem used, cpu load\n");
+			br.close();
+			fr.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-		while(true){
-			// Add 10 random integers to the list
-			for(int i = 0; i<10; i++){
+		while(loopCount <= 1000000000){
+			// Add 100 random integers to the list
+			for(int i = 0; i<100; i++){
 				int rand_num = rand.nextInt(1000);
 				list.add(rand_num);
 			}
-			// Get 10 values by index from list
-			for(int j = 0; j<10;j++){
+			
+			before = Instant.now();
+			
+			// Get 100 values by index from list
+			for(int j = 0; j<100;j++){
 				int rand_num2 = rand.nextInt(list.size()-1);
 				Integer temp = list.get(rand_num2);
 			}
@@ -78,22 +111,9 @@ public class OStest {
 			cpuLoad = getCPUload();
 			// write data to .txt file in comma-separated format
 			// Work out how to convert to csv!
-			try {
-				br.write(delta+", "+loopCount+", "+list.size() + ", "+ usedMem+", "+cpuLoad+"\n");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
+			appendToFile(file, delta+", "+loopCount+", "+list.size() + ", "+ usedMem+", "+cpuLoad+"\n");
 		}
-		/*
-		// Infinite while loop means br never closed...solution?
-		try {
-            br.close();
-            fr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-		//System.out.println(list.get(1));
 	}
 
 
