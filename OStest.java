@@ -16,6 +16,12 @@ public class OStest {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 	
+	private static final long  MEGABYTE = 1024L * 1024L;
+
+	public static long bytesToMeg(long bytes) {
+		return bytes / MEGABYTE ;
+	}
+	
 	// return available memory
 	public static long availableMem() {
 		return Runtime.getRuntime().freeMemory();
@@ -88,6 +94,8 @@ public class OStest {
 			e1.printStackTrace();
 		}
 		
+		before = Instant.now();
+		
 		while(loopCount <= 1000000000){
 			// Add 100 random integers to the list
 			for(int i = 0; i<100; i++){
@@ -95,7 +103,7 @@ public class OStest {
 				list.add(rand_num);
 			}
 			
-			before = Instant.now();
+			//before = Instant.now();
 			
 			// Get 100 values by index from list
 			for(int j = 0; j<100;j++){
@@ -107,13 +115,17 @@ public class OStest {
 			delta = Duration.between(before, after).toMillis();
 			
 			loopCount++;
-			usedMem = currentUsedMem();
+			usedMem = bytesToMeg(currentUsedMem());
 			cpuLoad = getCPUload();
 			// write data to .txt file in comma-separated format
 			// Work out how to convert to csv!
 			
 			appendToFile(file, delta+", "+loopCount+", "+list.size() + ", "+ usedMem+", "+cpuLoad+"\n");
 		}
+		
+		System.out.println("End total memory: " + totalMem());
+		System.out.println("End available memory: " + availableMem());
+		
 	}
 
 
