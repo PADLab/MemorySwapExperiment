@@ -105,7 +105,7 @@ public class OStest {
 		
 			before = Instant.now();
 		
-			while(loopCount <= 1000000000){
+			while(loopCount <= 50000000){
 				// Add 100 random integers to the list
 				for(int i = 0; i<100; i++){
 					int rand_num = rand.nextInt(1000);

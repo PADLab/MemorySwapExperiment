@@ -45,7 +45,7 @@ def plotGraph(minVal, maxVal):
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
 	ax1.plot(x, y1)
-	ax1.set_ylabel('Memory Used')
+	ax1.set_ylabel('Memory Used (MB)')
 	ax1.set_xlabel('Time elapsed (ms)')
 
 	#print ("First subplot complete")
