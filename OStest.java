@@ -71,56 +71,70 @@ public class OStest {
 		double cpuLoad = 0;
 		Random rand = new Random();
 		
+		String[] argument = args;
+		
+		String min = args[0];
+		String max = args[1];
+		
+		
 		System.out.println("Initial total memory: " + totalMem());
 		System.out.println("Initial available memory: " + availableMem());
+		System.out.println("Min memory: " + min + ", Max memory:" + max);
 		
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		
 		// Begin timer
 		Instant before = Instant.now();
 		
-		File file = new File("output.txt");
+		File file = new File("output" + min + "-" + max + ".txt");
 		BufferedWriter br = null;
 		FileWriter fr = null;
 		
+		//try {
+		//	fr = new FileWriter(file);
+        //    br = new BufferedWriter(fr);
+		//	br.write("Delta, loop, list size, mem used, cpu load\n");
+		//	br.close();
+		//	fr.close();
+		//} catch (IOException e1) {
+		//	// TODO Auto-generated catch block
+		//	e1.printStackTrace();
+		//}
+		
 		try {
-			fr = new FileWriter(file);
-            br = new BufferedWriter(fr);
-			br.write("Delta, loop, list size, mem used, cpu load\n");
-			br.close();
-			fr.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
-		before = Instant.now();
+			before = Instant.now();
 		
-		while(loopCount <= 1000000000){
-			// Add 100 random integers to the list
-			for(int i = 0; i<100; i++){
-				int rand_num = rand.nextInt(1000);
-				list.add(rand_num);
+			while(loopCount <= 1000000000){
+				// Add 100 random integers to the list
+				for(int i = 0; i<100; i++){
+					int rand_num = rand.nextInt(1000);
+					list.add(rand_num);
+				}
+			
+				//before = Instant.now();
+			
+				// Get 100 values by index from list
+				for(int j = 0; j<100;j++){
+					int rand_num2 = rand.nextInt(list.size()-1);
+					Integer temp = list.get(rand_num2);
+				}
+			
+				Instant after = Instant.now(); // check elapsed time
+				delta = Duration.between(before, after).toMillis();
+			
+				loopCount++;
+				usedMem = bytesToMeg(currentUsedMem());
+				cpuLoad = getCPUload();
+				// write data to .txt file in comma-separated format
+				// Work out how to convert to csv!
+			
+				appendToFile(file, delta+", "+loopCount+", "+list.size() + ", "+ usedMem+", "+cpuLoad+"\n");
 			}
-			
-			//before = Instant.now();
-			
-			// Get 100 values by index from list
-			for(int j = 0; j<100;j++){
-				int rand_num2 = rand.nextInt(list.size()-1);
-				Integer temp = list.get(rand_num2);
-			}
-			
-			Instant after = Instant.now(); // check elapsed time
-			delta = Duration.between(before, after).toMillis();
-			
-			loopCount++;
-			usedMem = bytesToMeg(currentUsedMem());
-			cpuLoad = getCPUload();
-			// write data to .txt file in comma-separated format
-			// Work out how to convert to csv!
-			
-			appendToFile(file, delta+", "+loopCount+", "+list.size() + ", "+ usedMem+", "+cpuLoad+"\n");
+		} catch (Exception ex) {
+			System.out.println("Exception thrown at " + loopCount);
+		} catch (OutOfMemoryError ex) {
+			System.out.println("Exception thrown at " + loopCount);
 		}
 		
 		System.out.println("End total memory: " + totalMem());
